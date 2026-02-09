@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Valentine?</title>
+    <style>
+        /* --- STYLIZACJA OGÓLNA --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif; /* Bardziej romantyczna czcionka */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffe4e1; /* Delikatny różowy */
+            overflow: hidden;
+            position: relative; /* Dla animowanych serduszek */
+        }
+
+        /* --- Animowane serduszka w tle --- */
+        .heart-bg {
+            position: absolute;
+            background-color: #ff69b4; /* Gorący róż */
+            height: 20px;
+            width: 20px;
+            transform: rotate(-45deg);
+            animation: floatHeart 10s infinite ease-in;
+            opacity: 0;
+            z-index: 0; /* Zawsze pod treścią */
+        }
+        .heart-bg:before,
+        .heart-bg:after {
+            content: "";
+            background-color: #ff69b4;
+            border-radius: 50%;
+            height: 20px;
+            position: absolute;
+            width: 20px;
+        }
+        .heart-bg:before { top: -10px; left: 0; }
+        .heart-bg:after { left: 10px; top: 0; }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) rotate(-45deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(-45deg); opacity: 0; }
+        }
+
+        /* --- EKRAN GŁÓWNY --- */
+        #main-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            z-index: 10;
+            transition: opacity 0.8s ease-out;
+            position: relative;
+            background-color: rgba(255,255,255,0.8); /* Lekkie tło, żeby wyróżnić */
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Styl zdjęcia */
+        #photo {
+            width: 280px; /* Nieco mniejsze, bardziej intymne */
+            height: 200px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            object-fit: cover;
+            border: 3px solid #ff69b4; /* Ramka w kolorze serduszek */
+        }
+
+        /* Styl głównego pytania */
+        h1 {
+            color: #d14782; /* Ciemniejszy róż */
+            font-size: 3rem;
+            margin: 10px 0 20px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+
+        /* Kontener na przyciski */
+        .buttons-container {
+            display: flex;
+            gap: 40px; /* Większy odstęp między przyciskami */
+            margin-top: 20px;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Wspólny styl przycisków */
+        button {
+            padding: 18px 50px; /* Większe przyciski */
+            font-size: 1.8rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            outline: none;
+            background-color: #ff69b4; /* Kolor serc */
+            box-shadow: 0 5px 15px rgba(255,105,180,0.4);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        button:hover {
+            box-shadow: 0 8px 20px rgba(255,105,180,0.6);
+        }
+
+        /* --- EKRAN KOŃCOWY (RANDKA) --- */
+        #final-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top right, #ffe4e1, #ffc0cb); /* Subtelny gradient */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0; /* Na początku niewidoczne, żeby było płynne przejście */
+            transition: opacity 1.5s ease-in;
+        }
+
+        .invitation-card {
+            background-color: #fff;
+            padding: 40px 50px;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 90%;
+            animation: fadeInScale 1s ease-out forwards;
+            position: relative;
+            overflow: hidden; /* Dla serduszek animowanych w karcie */
+        }
+
+        .invitation-card::before { /* Dekoracyjne serce w tle karty */
+            content: "❤️";
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            font-size: 120px;
+            color: rgba(255,105,180,0.1);
+            transform: rotate(-25deg);
+            z-index: 1;
+        }
+        .invitation-card::after { /* Drugie serce */
+            content: "❤️";
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 100px;
+            color: rgba(255,105,180,0.15);
+            transform: rotate(15deg);
+            z-index: 1;
+        }
+
+
+        .invitation-card h2 {
+            color: #d14782;
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            font-family: 'Dancing Script', cursive; /* Jeśli czcionka dostępna */
+            position: relative;
+            z-index: 2;
+        }
+        .invitation-card p {
+            color: #663366;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .invitation-card .signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 2rem;
+            color: #ff69b4;
+            margin-top: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Import czcionki dla ładniejszego tekstu (jeśli strona będzie online) */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+    </style>
+</head>
+<body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            for (let i = 0; i < 20; i++) { // 20 serduszek
+                const heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 10 + 's';
+                heart.style.animationDuration = Math.random() * 8 + 6 + 's'; // Od 6 do 14 sekund
+                body.appendChild(heart);
+            }
+        });
+    </script>
+
+    <div id="main-screen">
+        <img id="photo" src="serce.jpg" alt="Twoje zdjęcie">
+        
+        <h1>Will you be my Valentine?</h1>
+        
+        <div class="buttons-container">
+            <button id="btn-yes-1">YES!</button>
+            <button id="btn-yes-2">YES!</button>
+        </div>
+    </div>
+
+    <div id="final-screen">
+        <div class="invitation-card">
+            <h2>Zgodziłaś się! YAY  ❤️</h2>
+            <p>
+                Chciałbym zaprosić ciebie na wspólną randke!<br>
+                <br>
+                <strong>Kiedy:</strong> Po twoim wyzdrowieniu <3<br>
+                <strong>Gdzie:</strong> Na twój ulubiony ramer albo możesz wybrać sama!<br>
+                <br>
+                Nie moge się doczekać na nasze wspolne wyjście!🥹
+            </p>
+            <p class="signature">Z miłościa, Twój Maksio💕</p>
+        </div>
+    </div>
+
+    <script>
+        const btnYes1 = document.getElementById('btn-yes-1');
+        const btnYes2 = document.getElementById('btn-yes-2');
+        const mainScreen = document.getElementById('main-screen');
+        const finalScreen = document.getElementById('final-screen');
+
+        let currentScale = 1;
+        const scaleIncrement = 0.8; // Ile przycisk urośnie na kliknięcie
+        const maxScale = 5;       // Kiedy zniknie (przycisk będzie 5x większy)
+
+        function handleYesClick() {
+            currentScale += scaleIncrement;
+            
+            btnYes1.style.transform = `scale(${currentScale})`;
+            btnYes2.style.transform = `scale(${currentScale})`;
+
+            if (currentScale >= maxScale) {
+                // Ukrywamy główny ekran
+                mainScreen.style.opacity = '0'; // Płynne zanikanie
+                mainScreen.style.pointerEvents = 'none'; // Wyłącza klikanie
+                
+                // Pokazujemy ekran końcowy z opóźnieniem
+                setTimeout(() => {
+                    mainScreen.style.display = 'none';
+                    finalScreen.style.display = 'flex';
+                    finalScreen.style.opacity = '1'; // Płynne pojawianie się
+                }, 800); // Czas trwania animacji opacity
+            }
+        }
+
+        btnYes1.addEventListener('click', handleYesClick);
+        btnYes2.addEventListener('click', handleYesClick);
+    </script>
+
+</body>
+</html>
